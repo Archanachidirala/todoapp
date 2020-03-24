@@ -33,7 +33,7 @@ const UPDATE_TODO = gql`
 
 function App() {
   let input;
-  const { data, loading, error } = useQuery(READ_TODOS);
+  const { data, loading, error , refetch} = useQuery(READ_TODOS);
   const [createTodo] = useMutation(CREATE_TODO);
   const [deleteTodo] = useMutation(REMOVE_TODO);
   const [updateTodo] = useMutation(UPDATE_TODO);
@@ -43,33 +43,36 @@ function App() {
   if (!data) return <p>Not found</p>;
 
   return (
-    <div className="app">
-      <h3>Create New Todo</h3>
-      <form onSubmit={e => {
-        e.preventDefault();
-        createTodo({ variables: { text: input.value } });
-        input.value = '';
-        window.location.reload();
-      }}>
-        <input className="form-control" type="text" placeholder="Enter todo" ref={node => { input = node; }}></input>
-        <button className="btn btn-primary px-5 my-2" type="submit">Submit</button>
-      </form>
-      <ul>
-        {data.todos.map((todo) =>
-          <li key={todo.id} className="w-100">
-            <span className={todo.completed ? "done" : "pending"}>{todo.text}</span>
-            <button className="btn btn-sm btn-danger rounded-circle float-right" onClick={() => {
-              deleteTodo({ variables: { id: todo.id } });
-              window.location.reload();
-            }}>Cancel</button>
-            <button className={`btn btn-sm float-right ${todo.completed ? "btn-success" : "btn-info"}`} onClick={() => {
-              updateTodo({ variables: { id: todo.id } });
-              window.location.reload();
-            }}>{todo.completed ? <span style={{color:"blue", fontWeight:"bold"}}>Completed</span> : <span>Not completed</span>}</button>
-          </li>
-        )}
-      </ul>
-    </div>
+    <React.Fragment>
+      <div className="app">
+        <h3>Create New Todo</h3>
+        <form onSubmit={e => {
+          e.preventDefault();
+          createTodo({ variables: { text: input.value } });
+          input.value = '';
+          window.location.reload();
+        }}>
+          <input className="form-control" type="text" placeholder="Enter todo" ref={node => { input = node; }}></input>
+          <button className="btn btn-primary px-5 my-2" type="submit">Submit</button>
+        </form>
+        <ul>
+          {data.todos.map((todo) =>
+            <li key={todo.id} className="w-100">
+              <span className={todo.completed ? "done" : "pending"}>{todo.text}</span>
+              <button className="btn btn-sm btn-danger rounded-circle float-right" onClick={() => {
+                deleteTodo({ variables: { id: todo.id } });
+                window.location.reload();
+              }}>X</button>
+              <button className={`btn btn-sm float-right ${todo.completed ? "btn-success" : "btn-info"}`} onClick={() => {
+                updateTodo({ variables: { id: todo.id } });
+                window.location.reload();
+              }}>{todo.completed ? <span>Completed</span> : <span>Not completed</span>}</button>
+            </li>
+          )}
+        </ul>
+        <button onClick={() => refetch()}>Refresh</button>
+      </div>
+      </React.Fragment>
   );
 }
 
