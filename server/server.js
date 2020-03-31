@@ -11,7 +11,7 @@ const Event = require('./models/event.js');
 let todos = [
   {
     id: Date.now().toString(),
-    text: 'Hello from GraphQL',
+    text: "HI",
     completed: true
   },
 ];
@@ -38,12 +38,12 @@ const resolvers = {
   },
   Mutation: {
     createTodo: (parent, args, context, info) => {
-/* 
-      return todos.push({
+
+       todos.push({
         id: Date.now().toString(),
         text: args.text,
         completed: false,
-      }); */
+      });
       const event  = new Event({
         id: Date.now().toString(),
         text: args.text,
